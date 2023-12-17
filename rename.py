@@ -1,29 +1,36 @@
 import os
+def get_file_creation_time(file_path):
+    return os.path.getctime(file_path)
 
 def rename(src, countNum):
-    # Link to the folder that you want to rename
-    folder = r'' + src + '//'
+    # Change directory to the specified folder
+    os.chdir(src)
 
-    # Count increase by 1 in each iteration
+    # Get a list of all files in the folder
+    files = os.listdir(src)
+
+    # Filter only image files (you can customize this based on your file extensions)
+    image_files = [file for file in files if file.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+
+    # Sort the list of image files alphabetically
+    image_files.sort()
     count = countNum
+    # Iterate through the sorted image files and rename them
+    for index, old_name in enumerate(image_files, start=1):
+        # Extract the file extension
+        file_extension = os.path.splitext(old_name)[1]
 
-    # iterate all files from a directory
-    for file_name in os.listdir(folder):
-        # Construct old file name
-        source = folder + file_name
+        # Construct the new file name with the specified prefix and index
+        new_name = f"{count}{file_extension}"
 
-        # Adding the count to the new file name and extension
-        destination = folder +  str(count) + ".jpg"
-        # if you have the trouble duplicate name
-        # please change detination = folder +  str(count) + "xxx.jpg"
-        # and start again
-
-        # Renaming the file
-        os.rename(source, destination)
+        # Rename the file
+        os.rename(old_name, new_name)
         count += 1
+        print(f"Renamed: {old_name} -> {new_name}")
+
 
     print('All Files Renamed')
     print('New Names are')
     # verify the result
-    res = os.listdir(folder)
+    res = os.listdir(src)
     print(res)
